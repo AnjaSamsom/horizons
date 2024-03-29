@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Data Visualization</title>
+    <!-- Include Chart.js from CDN for charting functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include Bootstrap CSS for styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Stock Data Visualization</h2>
+    <!-- Dropdown to select the type of data to display -->
+    <select id="data-type" class="custom-select mb-3">
+        <option value="Close">Close Price</option>
+        <option value="Returns">Returns</option>
+        <option value="Normalized">Normalized Price</option>
+        <!-- Add more options based on the data available -->
+    </select>
+    <canvas id="stockChart"></canvas>
+</div>
+
+<script>
+    // Function to load the stock data and update the chart
+    function loadStockData(selectedDataType) {
+        fetch('stock_data.json')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('stockChart').getContext('2d');
+
+                // Prepare the labels and data
+                const labels = data.map(item => item.Date);
+                const chartData = data.map(item => item[selectedDataType]);
+
+                // Update or create the chart
+                if (window.stockChart) {
+                    window.stockChart.data.labels = labels;
+                    window.stockChart.data.datasets[0].data = chartData;
+                    window.stockChart.data.datasets[0].label = `${selectedDataType} of AAPL`;
+                    window.stockChart.update();
+                } else {
+                    window.stockChart = new Chart(ctx, {
+                        type: 'line', // Line chart
+                        data: {
+                            labels: labels, // X-axis labels (dates)
+                            datasets: [{
+                                label: `${selectedDataType} of AAPL`,
+                                data: chartData, // Y-axis data
+                                borderColor: 'rgb(38, 150, 228)',
+                                fill: false,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                xAxes: [{
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day',
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Date'
+                                    }
+                                }],
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: selectedDataType
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                }
+            });
+    }
+
+    // Event listener for the dropdown to reload the chart with selected data type
+    document.getElementById('data-type').addEventListener('change', function() {
+        loadStockData(this.value);
+    });
+
+    // Load the default chart data when the page loads
+    window.onload = () => loadStockData(document.getElementById('data-type').value);
+</script>
+
+</body>
+</html>
