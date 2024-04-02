@@ -22,6 +22,20 @@ def invest_10000(stock_returns_cumulative):
     plt.savefig("css/images/graphs/invest_10000.png")
     plt.close()
 
+def invest_10000_individual(tickers):
+    for ticker in tickers:
+        stock_prices = yf.download(ticker, start="2014-01-01", end="2023-12-31")["Adj Close"]
+        stock_prices = stock_prices.asfreq(freq="D", method="ffill")
+        stock_returns = stock_prices.pct_change()
+        stock_returns.iloc[0]=0
+        stock_returns_cumulative = (stock_returns+1).cumprod()
+        stock_invest_10000 = 10000*stock_returns_cumulative
+        stock_invest_10000.plot(title= stocks.tickers[ticker].info["longName"] +": Value of $10,000 invested on January 1, 2014", figsize=(15,10))
+        plt.xlabel("Year")
+        plt.ylabel("USD $")
+        plt.savefig("css/images/graphs/"+ticker+"_invest_10000.png")
+        plt.close()
+
 def cagr(data, periods):
     final_value = data.iloc[-1]
     starting_value = data.iloc[0]
@@ -105,8 +119,9 @@ stocks = results[3]
 #invest_10000(stock_returns_cumulative)
 toolkit_companies = companies
 #financial_metrics(tickers, toolkit_companies)
+invest_10000_individual(tickers)
 
-
+"""
 #10 yr
 ten_yrs = cagr(stock_prices["2014-01-01":"2023-12-31"], 10)
 
@@ -119,6 +134,6 @@ three_yrs = cagr(stock_prices["2021-01-01":"2023-12-31"], 3)
 #1 yr
 one_yr = cagr(stock_prices["2023-01-01":"2023-12-31"], 1) 
 
-
+"""
 
 
