@@ -5,8 +5,8 @@ import csv
 import yfinance as yf
 import pandas as pd
 import numpy as np
-# adapted from A_random_walk_through_the_SP500_Python.ipynb
-
+# adapted from A_random_walk_through_the_SP500_Python.ipynb 
+# Anja Samsom
 # stocks chosen
 tickers = ['WMT','BRK-B','LEA','AEHR','AVGO','RYCEY','MTCH','FUN','TNL','AAL','XOM','META','TSLA','SCHW','M','COKE','AAPL','MRVL','JNJ','EADSY']
 
